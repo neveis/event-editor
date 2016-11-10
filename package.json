@@ -1,0 +1,42 @@
+{
+  "name": "event-editor",
+  "version": "0.1.0",
+  "description": "A editor for creating events.",
+  "main": "app.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "Electron",
+    "Vue",
+    "UIKit"
+  ],
+  "author": "Pbin",
+  "license": "",
+  "dependencies": {
+    "vue": "^2.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-preset-stage-2": "^6.0",
+    "css-loader": "^0.25.0",
+    "electron": "^1.4.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "gulp": "^3.9.1",
+    "gulp-webpack": "^1.5.0",
+    "html-webpack-plugin": "^2.8.1",
+    "json-loader": "^0.5.4",
+    "url-loader": "^0.5.7",
+    "vinyl-named": "^1.1.0",
+    "vue-loader": "^9.4.0",
+    "vue-style-loader": "^1.0.0",
+    "webpack-merge": "^0.15.0"
+  },
+  "engines": {
+    "node": ">= 4.0.0",
+    "npm": ">= 3.0.0"
+  }
+}

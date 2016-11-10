@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>事件编辑器</title>
+    <link rel="stylesheet" href="./static/css/uikit.css" />
+    <link rel="stylesheet" href="./static/css/components/form-advanced.css" />
+    <link rel="stylesheet" href="./static/css/components/sortable.css" />
+    <script>
+        if (typeof module === 'object') {
+            window.mymodule = module;
+            module = undefined;
+        }
+    </script>
+    <script src="./static/js/jquery.min.js"></script>
+
+    <script>
+        if (!module) {
+            module = window.mymodule;
+            window.mymodule = undefined;
+        }
+    </script>
+    <script src="./static/js/uikit.min.js"></script>
+    <script src="./static/js/components/sortable.js"></script>
+    <script src="./static/js/autosize.js"></script>
+    <style>
+        .uk-container {
+            max-width: 800px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="uk-container uk-container-center" data-uk-observe>
+        <div id="app">
+            <Board></Board>
+        </div>
+    </div>
+</body>
+<script>
+    autosize($('textarea'));
+    console.log($('textarea'))
+</script>
+<script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+</script>
+
+</html>
