@@ -40,18 +40,18 @@
                         <ul class="uk-switcher" :id="'event-' + eventIndex + '-page-' + pageIndex"> 
                             <li>
                                 <div class="uk-float-left sub-event-panel uk-sortable" data-uk-sortable="{handleClass:'uk-sortable-handle'}">
-                                    <div class="sub-event" v-for="(subevent,index) in page.subEvents" :key="subevent._id">
-                                        <select v-model="subevent.eventType" v-on:change="changeEventType(subevent)" :id="'event-type-'+ eventIndex +'-' + pageIndex + '-' + index">
+                                    <div class="sub-event" v-for="(subEvent,index) in page.subEvents" :key="subEvent._id">
+                                        <select v-model="subEvent.eventType" v-on:change="changeEventType($event,subEvent)" :id="'event-type-'+ eventIndex +'-' + pageIndex + '-' + index">
                                             <option value="1">角色对话</option>
                                             <option value="2">角色移动</option>
                                         </select>
                                         <button type="button" class="uk-button uk-icon-unlock-alt" @click.stop="disableTypeSelect($event,'event-type-'+ eventIndex +'-' + pageIndex + '-' + index)"></button>
                                         <button type="button" class="uk-button uk-icon-toggle-up" @click.stop="hideSubEvent($event,'sub-event-' + eventIndex + '-' + pageIndex + '-' + index)"></button>
                                         <i class="uk-sortable-handle uk-icon uk-icon-bars" @click="checkOrder($event,index,page.subEvents)"></i>
-                                        <component class="sub-event-comp" :is="subevent.currentView" :subEvent="subevent" :id="'sub-event-' + eventIndex + '-' + pageIndex + '-' + index"></component>
+                                        <component class="sub-event-comp" :is="subEvent.currentView" :subEvent="subEvent" :id="'sub-event-' + eventIndex + '-' + pageIndex + '-' + index"></component>
                                     </div>
                                     <div>
-                                        <button class="uk-button" v-on:click="addNewSubEvent(page.subEvents)" type="button">new subEvent</button>
+                                        <button class="uk-button" id="page-bottom" v-on:click="addNewSubEvent(page.subEvents)" type="button">new subEvent</button>
                                     </div>
                                 </div>
                             </li>
@@ -72,6 +72,7 @@
 </template>
 
 <script>
+    import Vue from 'vue'
     import Dialogue from './Dialogue'
     import ActorMove from './ActorMove'
     export default {
@@ -97,7 +98,7 @@
                     subEvents: []
                 })
             },
-            changeEventType: function(subEvent) {
+            changeEventType: function(e, subEvent) {
                 switch (subEvent.eventType) {
                     case '1':
                         subEvent.currentView = 'Dialogue';
@@ -108,6 +109,11 @@
                     default:
                         subEvent.currentView = '';
                 };
+                //如果是最后一个子事件，自动滚动到底部
+                Vue.nextTick(function() {
+                    if ($(e.target).parent().index() === $(e.target).parent().siblings().length - 1)
+                        e.target.parentNode.scrollIntoView();
+                })
             },
             disableTypeSelect: function(e, selectId) {
                 //切换图标

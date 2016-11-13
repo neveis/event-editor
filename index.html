@@ -32,16 +32,12 @@
 </head>
 
 <body>
-    <div class="uk-container uk-container-center" data-uk-observe>
+    <div data-uk-observe>
         <div id="app">
             <Board></Board>
         </div>
     </div>
 </body>
-<script>
-    autosize($('textarea'));
-    console.log($('textarea'))
-</script>
 <script>
     // You can also require other files to run in this process
     require('./renderer.js')

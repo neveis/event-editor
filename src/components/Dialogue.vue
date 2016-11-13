@@ -25,13 +25,14 @@
         name: 'event-dialogue',
         props: ['subEvent'],
         created: function() {
-            this.subEvent.detail = {
+            //如果是导入，detail本身会有值，所以不能直接赋值一个空值
+            this.subEvent.detail = Object.assign({
                 name: '',
                 dialogues: [{
                     text: '',
                     _id: 0
                 }]
-            }
+            }, this.subEvent.detail)
             Vue.nextTick(function() {
                 autosize($('textarea'));
             })

@@ -34,14 +34,14 @@
         name: 'actor-move',
         props: ['subEvent'],
         created: function() {
-            this.subEvent.detail = {
+            this.subEvent.detail = Object.assign({
                 "actorId": '',
                 "pos": {
                     "x": null,
                     "y": null
                 },
                 "direction": 8
-            }
+            }, this.subEvent.detail)
         },
     }
 </script>

@@ -1,6 +1,6 @@
 <template>
-	<div class="uk-grid board">
-		<div class="uk-width-1-4 siderbar">
+	<div class="board">
+		<div class="siderbar">
 			<div class="content">
 				<div class="header">
 					<div class="title uk-display-inline-block">
@@ -20,8 +20,9 @@
 				</div>
 			</div>
 			<div class="output-button" id="output">输出</div>
+            <div class="output-button" id="import">导入</div>
 		</div>
-		<div class="uk-width-3-4 main-panel">
+		<div class="main-panel">
 			<Event v-for="(event,index) in events" :key="event.index" :eventIndex="event.index" :event="event.event" class="uk-animation-slide-left uk-animation-1"
 				:class="{'uk-hidden':index !== selectedIndex}"></Event>
 		</div>
@@ -82,6 +83,8 @@
 <style>
     .board {
         height: 600px;
+        display: flex;
+        flex-wrap: nowrap;
     }
     
     .board .siderbar {
@@ -89,6 +92,7 @@
         color: #ccc;
         padding: 0px;
         z-index: 1;
+        flex: 0 0 200px;
     }
     
     .board .siderbar .content {
@@ -197,5 +201,6 @@
     
     .main-panel {
         padding: 0;
+        flex: 1;
     }
 </style>

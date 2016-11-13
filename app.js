@@ -62,6 +62,27 @@ function createWindow() {
         })
     })
 
+    ipcMain.on('import-event-file', function(event) {
+        let file = dialog.showOpenDialog({
+            title: '导入文件',
+            defaultPath: '\\',
+            filters: [
+                { name: 'JSON', extensions: ['json'] }
+            ]
+        })
+        console.log(file);
+        if (!file)
+            return;
+        fs.readFile(file[0], 'utf-8', function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                event.returnValue = data;
+            }
+        })
+
+    })
+
 }
 
 // This method will be called when Electron has finished

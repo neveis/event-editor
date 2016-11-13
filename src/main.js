@@ -11,7 +11,7 @@ var vm = new Vue({
 
 global._vm = vm;
 
-if (window || !windows.module) {
+if (!window.module) {
     $('#output').click(function() {
         var eventsList = vm.$children[0].events;
         /*
@@ -45,4 +45,96 @@ if (window || !windows.module) {
         console.log(events);
         console.log(JSON.stringify(events, null, '  '));
     })
+
+
+    $('#import').click(function() {
+        var data = `{
+  "1": {
+    "eventId": "1",
+    "triggerType": "2",
+    "pages": [
+      {
+        "subEvents": [
+          {
+            "detail": {
+              "name": "123",
+              "dialogues": [
+                "44"
+              ]
+            },
+            "eventType": "1"
+          },
+          {
+            "detail": {
+              "actorId": "3",
+              "pos": {
+                "x": 2,
+                "y": 1
+              },
+              "direction": 8
+            },
+            "eventType": "2"
+          }
+        ]
+      },
+      {
+        "subEvents": []
+      }
+    ]
+  },
+  "1-2-3": {
+    "eventId": "1-2-3",
+    "triggerType": "1",
+    "pages": [
+      {
+        "subEvents": [
+          {
+            "detail": {
+              "actorId": "1",
+              "pos": {
+                "x": 2,
+                "y": 1
+              },
+              "direction": 8
+            },
+            "eventType": "2"
+          }
+        ]
+      }
+    ]
+  }
+}`;
+        data = JSON.parse(data);
+        for (var eventId in data) {
+            var pages = data[eventId].pages;
+            for (var i = 0; i < pages.length; i++) {
+                var subEvents = pages[i].subEvents
+                for (var j = 0; j < subEvents.length; j++) {
+                    var subEvent = subEvents[j];
+                    subEvent['_id'] = j + 1;
+                    if (subEvent.eventType === '1') {
+                        subEvent['currentView'] = 'Dialogue';
+                        subEvent.detail.dialogues.forEach(function(dialogue, index, dialogues) {
+                            dialogues[index] = {
+                                text: dialogue,
+                                _id: index + 1
+                            };
+                        })
+                    } else {
+                        subEvent['currentView'] = 'ActorMove';
+                    }
+                }
+            }
+        }
+        console.log(data);
+        for (var eventId in data) {
+            var event = data[eventId];
+            vm.$children[0].count++;
+            vm.$children[0].events.push({
+                event: Object.assign({}, event),
+                index: vm.$children[0].count
+            })
+        }
+    })
+
 }
