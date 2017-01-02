@@ -1,3 +1,5 @@
+'use strict';
+
 const electron = require('electron')
     // Module to control application life.
 const app = electron.app
@@ -52,7 +54,8 @@ function createWindow() {
                 { name: 'JSON', extensions: ['json'] }
             ]
         })
-        console.log('file', file);
+        if (!file) return;
+        //console.log('file', file);
         fs.writeFile(file, eventsData, function(err) {
             if (err) {
                 console.log(err);
@@ -64,15 +67,17 @@ function createWindow() {
 
     ipcMain.on('import-event-file', function(event) {
         let file = dialog.showOpenDialog({
-            title: '导入文件',
-            defaultPath: '\\',
-            filters: [
-                { name: 'JSON', extensions: ['json'] }
-            ]
-        })
-        console.log(file);
-        if (!file)
+                title: '导入文件',
+                defaultPath: '\\',
+                filters: [
+                    { name: 'JSON', extensions: ['json'] }
+                ]
+            })
+            //console.log(file);
+        if (!file) {
+            event.returnValue = null;
             return;
+        }
         fs.readFile(file[0], 'utf-8', function(err, data) {
             if (err) {
                 console.log(err);

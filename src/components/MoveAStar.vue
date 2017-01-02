@@ -1,13 +1,20 @@
 <template>
-<div class="actor-move">
+<div class="move-astar">
 	<ul>
 		<li>
 			<label>角色ID</label>
 			<input type="text" v-model="subEvent.detail.actorId">
 		</li>
 		<li>
-			<label>移动格数</label>
-			<input type="text" v-model.number="subEvent.detail.step">
+			<label>目的地坐标</label>
+			<ul>
+				<li>
+					<label>x</label><input type="text" v-model.number="subEvent.detail.destPos.x">
+				</li>
+				<li>
+					<label>y</label><input type="text" v-model.number="subEvent.detail.destPos.y">
+				</li>
+			</ul>
 		</li>
 		<li>
 			<label>移动速度</label>
@@ -32,12 +39,15 @@
 
 <script>
     export default {
-        name: 'actor-move',
+        name: 'move-astar',
         props: ['subEvent'],
         created: function() {
             this.subEvent.detail = Object.assign({
                 actorId: '',
-                step: 1,
+                destPos: {
+                    x: null,
+                    y: null
+                },
                 direction: 8,
                 speed: 1,
                 wait: true

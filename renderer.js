@@ -1,3 +1,4 @@
+'use strict';
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
@@ -23,16 +24,28 @@ $("#output").click(function() {
         let eventData = eventsList[i].event;
         let eventId = eventData.eventId;
         events[eventId] = JSON.parse(JSON.stringify(eventData));
+        events[eventId].eventTypeMap = undefined;
         var pages = events[eventId].pages;
         for (var j = 0; j < pages.length; j++) {
             var subEvents = pages[j].subEvents;
             for (var k = 0; k < subEvents.length; k++) {
                 subEvents[k]['_id'] = undefined;
-                subEvents[k]['currentView'] = undefined;
+                //subEvents[k]['currentView'] = undefined;
                 if (subEvents[k].eventType === '1') {
-                    subEvents[k].detail.dialogues.forEach(function(dialogue, index, dialogues) {
-                        dialogues[index] = dialogue.text;
+                    //对话
+                    let actors = subEvents[k].detail.actors;
+                    actors.forEach(function(actor, index, actors) {
+                        actor._id = undefined;
+                        actor.dialogues.forEach(function(dialogue, index, dialogues) {
+                            dialogues[index] = dialogue.text;
+                        })
                     })
+                } else if (subEvents[k].eventType === '2') {
+                    //商店
+                    subEvents[k].detail.itemIdList = subEvents[k].detail.itemIdList.split(',');
+                } else if (subEvents[k].eventType === '14') {
+                    //隐藏UI
+                    subEvents[k].detail.nodeList = subEvents[k].detail.nodeList.split(',');
                 }
             }
         }
@@ -55,15 +68,22 @@ $('#import').click(function() {
                 var subEvent = subEvents[j];
                 subEvent['_id'] = j + 1;
                 if (subEvent.eventType === '1') {
-                    subEvent['currentView'] = 'Dialogue';
-                    subEvent.detail.dialogues.forEach(function(dialogue, index, dialogues) {
-                        dialogues[index] = {
-                            text: dialogue,
-                            _id: index + 1
-                        };
+                    //subEvent['currentView'] = 'Dialogue';
+                    let actors = subEvent.detail.actors;
+                    actors.forEach(function(actor, index, actors) {
+                        actor._id = index + 1;
+                        actor.dialogues.forEach(function(dialogue, index, dialogues) {
+                            dialogues[index] = {
+                                text: dialogue,
+                                _id: index + 1
+                            };
+                        })
                     })
-                } else {
-                    subEvent['currentView'] = 'ActorMove';
+                } else if (subEvent.eventType === '2') {
+                    subEvent.detail.itemIdList = subEvent.detail.itemIdList.join(',');
+                } else if (subEvents[j].eventType === '14') {
+                    //隐藏UI
+                    subEvents[j].detail.nodeList = subEvents[j].detail.nodeList.join(',');
                 }
             }
         }

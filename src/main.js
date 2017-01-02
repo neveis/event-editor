@@ -1,3 +1,5 @@
+"use strict";
+
 import Vue from 'vue'
 import Board from './components/Board'
 
@@ -28,16 +30,27 @@ if (!window.module) {
             let eventData = eventsList[i].event;
             let eventId = eventData.eventId;
             events[eventId] = JSON.parse(JSON.stringify(eventData));
+            events[eventId].eventTypeMap = undefined;
             var pages = events[eventId].pages;
             for (var j = 0; j < pages.length; j++) {
                 var subEvents = pages[j].subEvents;
                 for (var k = 0; k < subEvents.length; k++) {
                     subEvents[k]['_id'] = undefined;
-                    subEvents[k]['currentView'] = undefined;
+                    //subEvents[k]['currentView'] = undefined;
                     if (subEvents[k].eventType === '1') {
-                        subEvents[k].detail.dialogues.forEach(function(dialogue, index, dialogues) {
-                            dialogues[index] = dialogue.text;
+                        let actors = subEvents[k].detail.actors;
+                        actors.forEach(function(actor, index, actors) {
+                            actor._id = undefined;
+                            actor.dialogues.forEach(function(dialogue, index, dialogues) {
+                                dialogues[index] = dialogue.text;
+                            })
                         })
+                    } else if (subEvents[k].eventType === '2') {
+                        //商店
+                        subEvents[k].detail.itemIdList = subEvents[k].detail.itemIdList.split(',');
+                    } else if (subEvents[k].eventType === '14') {
+                        //隐藏UI
+                        subEvents[k].detail.nodeList = subEvents[k].detail.nodeList.split(',');
                     }
                 }
             }
@@ -49,53 +62,33 @@ if (!window.module) {
 
     $('#import').click(function() {
         var data = `{
-  "1": {
-    "eventId": "1",
-    "triggerType": "2",
-    "pages": [
-      {
-        "subEvents": [
-          {
-            "detail": {
-              "name": "123",
-              "dialogues": [
-                "44"
-              ]
-            },
-            "eventType": "1"
-          },
-          {
-            "detail": {
-              "actorId": "3",
-              "pos": {
-                "x": 2,
-                "y": 1
-              },
-              "direction": 8
-            },
-            "eventType": "2"
-          }
-        ]
-      },
-      {
-        "subEvents": []
-      }
-    ]
-  },
-  "1-2-3": {
-    "eventId": "1-2-3",
+  "2": {
+    "eventId": "2",
     "triggerType": "1",
     "pages": [
       {
         "subEvents": [
           {
             "detail": {
-              "actorId": "1",
-              "pos": {
-                "x": 2,
-                "y": 1
-              },
-              "direction": 8
+              "actors": [
+                {
+                  "name": "112",
+                  "dialogues": [
+                    "3333"
+                  ]
+                }
+              ]
+            },
+            "eventType": "1"
+          },
+          {
+            "detail": {
+              "itemIdList": [
+                "1",
+                "2",
+                "3",
+                "4"
+              ]
             },
             "eventType": "2"
           }
@@ -113,15 +106,22 @@ if (!window.module) {
                     var subEvent = subEvents[j];
                     subEvent['_id'] = j + 1;
                     if (subEvent.eventType === '1') {
-                        subEvent['currentView'] = 'Dialogue';
-                        subEvent.detail.dialogues.forEach(function(dialogue, index, dialogues) {
-                            dialogues[index] = {
-                                text: dialogue,
-                                _id: index + 1
-                            };
+                        //subEvent['currentView'] = 'Dialogue';
+                        let actors = subEvent.detail.actors;
+                        actors.forEach(function(actor, index, actors) {
+                            actor._id = index + 1;
+                            actor.dialogues.forEach(function(dialogue, index, dialogues) {
+                                dialogues[index] = {
+                                    text: dialogue,
+                                    _id: index + 1
+                                };
+                            })
                         })
-                    } else {
-                        subEvent['currentView'] = 'ActorMove';
+                    } else if (subEvent.eventType === '2') {
+                        subEvent.detail.itemIdList = subEvent.detail.itemIdList.join(',');
+                    } else if (subEvents[k].eventType === '14') {
+                        //隐藏UI
+                        subEvents[k].detail.nodeList = subEvents[k].detail.nodeList.join(',');
                     }
                 }
             }

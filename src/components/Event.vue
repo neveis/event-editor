@@ -42,18 +42,18 @@
                                 <div class="uk-float-left sub-event-panel uk-sortable" data-uk-sortable="{handleClass:'uk-sortable-handle'}">
                                     <div class="sub-event" v-for="(subEvent,index) in page.subEvents" :key="subEvent._id">
                                         <select v-model="subEvent.eventType" v-on:change="changeEventType($event,subEvent)" :id="'event-type-'+ eventIndex +'-' + pageIndex + '-' + index">
-                                            <option value="1">角色对话</option>
-                                            <option value="2">角色移动</option>
+                                            <option v-for="(value,key) in eventTypeMap" :value=key>{{ value.optionLabel }}</option>
                                         </select>
                                         <button type="button" class="uk-button uk-icon-unlock-alt" @click.stop="disableTypeSelect($event,'event-type-'+ eventIndex +'-' + pageIndex + '-' + index)"></button>
                                         <button type="button" class="uk-button uk-icon-toggle-up" @click.stop="hideSubEvent($event,'sub-event-' + eventIndex + '-' + pageIndex + '-' + index)"></button>
+                                        <button type="button" class="uk-button uk-icon-close" @click.stop="delSubEvent(page.subEvents,index)"></button>
                                         <i class="uk-sortable-handle uk-icon uk-icon-bars" @click="checkOrder($event,index,page.subEvents)"></i>
-                                        <component class="sub-event-comp" :is="subEvent.currentView" :subEvent="subEvent" :id="'sub-event-' + eventIndex + '-' + pageIndex + '-' + index"></component>
+                                        <component class="sub-event-comp" :is="eventTypeMap[subEvent.eventType]?eventTypeMap[subEvent.eventType].currentView:null" :subEvent="subEvent" :id="'sub-event-' + eventIndex + '-' + pageIndex + '-' + index"></component>
                                     </div>
                                     <div>
-                                        <button class="uk-button" id="page-bottom" v-on:click="addNewSubEvent(page.subEvents)" type="button">new subEvent</button>
+                                        <button class="uk-button" id="page-bottom" v-on:click="addNewSubEvent(page.subEvents)" type="button">新子事件</button>
                                     </div>
-                                </div>
+                                </div>  
                             </li>
                             <li>
                                 开关
@@ -74,14 +74,133 @@
 <script>
     import Vue from 'vue'
     import Dialogue from './Dialogue'
+    import Shop from './Shop'
     import ActorMove from './ActorMove'
+    import SwitchScene from './SwitchScene'
+    import ScrollMap from './ScrollMap'
+    import ShowActor from './ShowActor'
+    import SetActorPos from './SetActorPos'
+    import ShowItemMsg from './ShowItemMsg'
+    import AddItem from './AddItem'
+    import ShowMessage from './ShowMessage'
+    import HideUI from './HideUI'
+    import SetSwitcher from './SetSwitcher'
+    import DoorAnimation from './DoorAnimation'
+    import MoveAStar from './MoveAStar'
+    import GetTreasure from './GetTreasure'
+    import ShowOption from './ShowOption'
+    import DelaySecond from './DelaySecond'
+    import Fade from './Fade'
+    import AudioMusic from './AudioMusic'
+    import AudioEffect from './AudioEffect'
+    var eventTypeMap = {
+        '1': {
+            currentView: 'Dialogue',
+            optionLabel: '角色对话'
+        },
+        '2': {
+            currentView: 'Shop',
+            optionLabel: '商店'
+        },
+        '3': {
+            currentView: 'SwitchScene',
+            optionLabel: '场景切换'
+        },
+        '5': {
+            currentView: 'ScrollMap',
+            optionLabel: '镜头移动'
+        },
+        '6': {
+            currentView: 'ActorMove',
+            optionLabel: '角色移动'
+        },
+        '7': {
+            currentView: 'ShowActor',
+            optionLabel: '显示/隐藏角色'
+        },
+        '9': {
+            currentView: 'SetActorPos',
+            optionLabel: '设置角色位置'
+        },
+        '11': {
+            currentView: 'ShowItemMsg',
+            optionLabel: '显示道具信息'
+        },
+        '12': {
+            currentView: 'AddItem',
+            optionLabel: '获得/失去道具'
+        },
+        '13': {
+            currentView: 'ShowMessage',
+            optionLabel: '显示信息'
+        },
+        '14': {
+            currentView: 'HideUI',
+            optionLabel: '隐藏/显示UI'
+        },
+        '15': {
+            currentView: 'SetSwitcher',
+            optionLabel: '设置开关'
+        },
+        '17': {
+            currentView: 'DoorAnimation',
+            optionLabel: '开/关门动画'
+        },
+        '18': {
+            currentView: 'MoveAStar',
+            optionLabel: '自动寻路'
+        },
+        '19': {
+            currentView: 'GetTreasure',
+            optionLabel: '拾取宝箱/道具'
+        },
+        '21': {
+            currentView: 'ShowOption',
+            optionLabel: '选项'
+        },
+        '22': {
+            currentView: 'DelaySecond',
+            optionLabel: '延迟（秒）'
+        },
+        '23': {
+            currentView: 'Fade',
+            optionLabel: '淡入/淡出'
+        },
+        '25': {
+            currentView: 'AudioMusic',
+            optionLabel: '音乐控制'
+        },
+        '26': {
+            currentView: 'AudioEffect',
+            optionLabel: '播放音效'
+        },
+    };
     export default {
         components: {
             Dialogue,
-            ActorMove
+            Shop,
+            SwitchScene,
+            ScrollMap,
+            ActorMove,
+            ShowActor,
+            SetActorPos,
+            ShowItemMsg,
+            AddItem,
+            ShowMessage,
+            HideUI,
+            SetSwitcher,
+            DoorAnimation,
+            MoveAStar,
+            GetTreasure,
+            ShowOption,
+            DelaySecond,
+            Fade,
+            AudioMusic,
+            AudioEffect
         },
         props: ['event', 'eventIndex'],
         data: function() {
+            this.event.eventTypeMap = eventTypeMap;
             return this.event;
         },
         mounted: function() {
@@ -99,16 +218,7 @@
                 })
             },
             changeEventType: function(e, subEvent) {
-                switch (subEvent.eventType) {
-                    case '1':
-                        subEvent.currentView = 'Dialogue';
-                        break;
-                    case '2':
-                        subEvent.currentView = 'ActorMove';
-                        break;
-                    default:
-                        subEvent.currentView = '';
-                };
+                //subEvent.currentView = eventTypeMap[subEvent.eventType].currentView;
                 //如果是最后一个子事件，自动滚动到底部
                 Vue.nextTick(function() {
                     if ($(e.target).parent().index() === $(e.target).parent().siblings().length - 1)
@@ -134,9 +244,12 @@
                 subEvents.push({
                     detail: {},
                     eventType: '',
-                    currentView: '',
+                    //currentView: '',
                     _id: subEvents.length
                 })
+            },
+            delSubEvent: function(subEvents, index) {
+                subEvents.splice(index, 1);
             },
             checkOrder: function(e, index, subEvents) {
                 let currentIndex = $(e.target).parent().index();
