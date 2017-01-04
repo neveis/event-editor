@@ -80,6 +80,7 @@
     import ScrollMap from './ScrollMap'
     import ShowActor from './ShowActor'
     import SetActorPos from './SetActorPos'
+    import ShowEmotion from './ShowEmotion'
     import ShowItemMsg from './ShowItemMsg'
     import AddItem from './AddItem'
     import ShowMessage from './ShowMessage'
@@ -94,6 +95,7 @@
     import Fade from './Fade'
     import AudioMusic from './AudioMusic'
     import AudioEffect from './AudioEffect'
+
     var eventTypeMap = {
         '1': {
             currentView: 'Dialogue',
@@ -122,6 +124,10 @@
         '9': {
             currentView: 'SetActorPos',
             optionLabel: '设置角色位置'
+        },
+        '10': {
+            currentView: 'ShowEmotion',
+            optionLabel: '显示心情'
         },
         '11': {
             currentView: 'ShowItemMsg',
@@ -189,6 +195,7 @@
             ActorMove,
             ShowActor,
             SetActorPos,
+            ShowEmotion,
             ShowItemMsg,
             AddItem,
             ShowMessage,
@@ -226,6 +233,7 @@
             changeEventType: function(e, subEvent) {
                 //subEvent.currentView = eventTypeMap[subEvent.eventType].currentView;
                 //如果是最后一个子事件，自动滚动到底部
+                subEvent.detail = {};
                 Vue.nextTick(function() {
                     if ($(e.target).parent().index() === $(e.target).parent().siblings().length - 1)
                         e.target.parentNode.scrollIntoView();
