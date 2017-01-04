@@ -31,7 +31,7 @@ $("#output").click(function() {
             for (var k = 0; k < subEvents.length; k++) {
                 subEvents[k]['_id'] = undefined;
                 //subEvents[k]['currentView'] = undefined;
-                if (subEvents[k].eventType === '1') {
+                if (subEvents[k].eventType === 1) {
                     //对话
                     let actors = subEvents[k].detail.actors;
                     actors.forEach(function(actor, index, actors) {
@@ -40,10 +40,10 @@ $("#output").click(function() {
                             dialogues[index] = dialogue.text;
                         })
                     })
-                } else if (subEvents[k].eventType === '2') {
+                } else if (subEvents[k].eventType === 2) {
                     //商店
                     subEvents[k].detail.itemIdList = subEvents[k].detail.itemIdList.split(',');
-                } else if (subEvents[k].eventType === '14') {
+                } else if (subEvents[k].eventType === 14) {
                     //隐藏UI
                     subEvents[k].detail.nodeList = subEvents[k].detail.nodeList.split(',');
                 }
@@ -67,7 +67,7 @@ $('#import').click(function() {
             for (var j = 0; j < subEvents.length; j++) {
                 var subEvent = subEvents[j];
                 subEvent['_id'] = j + 1;
-                if (subEvent.eventType === '1') {
+                if (subEvent.eventType === 1) {
                     //subEvent['currentView'] = 'Dialogue';
                     let actors = subEvent.detail.actors;
                     actors.forEach(function(actor, index, actors) {
@@ -79,9 +79,9 @@ $('#import').click(function() {
                             };
                         })
                     })
-                } else if (subEvent.eventType === '2') {
+                } else if (subEvent.eventType === 2) {
                     subEvent.detail.itemIdList = subEvent.detail.itemIdList.join(',');
-                } else if (subEvents[j].eventType === '14') {
+                } else if (subEvents[j].eventType === 14) {
                     //隐藏UI
                     subEvents[j].detail.nodeList = subEvents[j].detail.nodeList.join(',');
                 }

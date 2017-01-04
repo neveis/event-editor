@@ -41,7 +41,7 @@
                             <li>
                                 <div class="uk-float-left sub-event-panel uk-sortable" data-uk-sortable="{handleClass:'uk-sortable-handle'}">
                                     <div class="sub-event" v-for="(subEvent,index) in page.subEvents" :key="subEvent._id">
-                                        <select v-model="subEvent.eventType" v-on:change="changeEventType($event,subEvent)" :id="'event-type-'+ eventIndex +'-' + pageIndex + '-' + index">
+                                        <select v-model.number="subEvent.eventType" v-on:change="changeEventType($event,subEvent)" :id="'event-type-'+ eventIndex +'-' + pageIndex + '-' + index">
                                             <option v-for="(value,key) in eventTypeMap" :value=key>{{ value.optionLabel }}</option>
                                         </select>
                                         <button type="button" class="uk-button uk-icon-unlock-alt" @click.stop="disableTypeSelect($event,'event-type-'+ eventIndex +'-' + pageIndex + '-' + index)"></button>
@@ -85,6 +85,7 @@
     import ShowMessage from './ShowMessage'
     import HideUI from './HideUI'
     import SetSwitcher from './SetSwitcher'
+    import MapAnimation from './MapAnimation'
     import DoorAnimation from './DoorAnimation'
     import MoveAStar from './MoveAStar'
     import GetTreasure from './GetTreasure'
@@ -142,6 +143,10 @@
             currentView: 'SetSwitcher',
             optionLabel: '设置开关'
         },
+        '16': {
+            currentView: 'MapAnimation',
+            optionLabel: '地图动画'
+        },
         '17': {
             currentView: 'DoorAnimation',
             optionLabel: '开/关门动画'
@@ -189,6 +194,7 @@
             ShowMessage,
             HideUI,
             SetSwitcher,
+            MapAnimation,
             DoorAnimation,
             MoveAStar,
             GetTreasure,

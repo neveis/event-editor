@@ -29,7 +29,7 @@ function createWindow() {
     }))
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    //mainWindow.webContents.openDevTools()
 
     //Emitted when window is resized. Page will modify css
     mainWindow.on('resize', function() {
