@@ -31,8 +31,21 @@ if (!window.module) {
             let eventId = eventData.eventId;
             events[eventId] = JSON.parse(JSON.stringify(eventData));
             events[eventId].eventTypeMap = undefined;
+            if (events[eventId].repeatCount !== 'Infinity') {
+                let count = parseInt(events[eventId].repeatCount);
+                //防止出现非法值
+                if (isNaN(count)) {
+                    events[eventId].repeatCount = 0;
+                }
+                events[eventId].repeatCount = count;
+            }
             var pages = events[eventId].pages;
             for (var j = 0; j < pages.length; j++) {
+                if (pages[j].switcher == '') {
+                    pages[j].switcher = []
+                } else {
+                    pages[j].switcher = pages[j].switcher.split(',');
+                }
                 var subEvents = pages[j].subEvents;
                 for (var k = 0; k < subEvents.length; k++) {
                     subEvents[k]['_id'] = undefined;
@@ -67,6 +80,13 @@ if (!window.module) {
     "triggerType": "1",
     "pages": [
       {
+          "switcher": [
+          "1",
+          "23",
+          "4",
+          "5",
+          "6"
+        ],
         "subEvents": [
           {
             "detail": {
@@ -99,8 +119,21 @@ if (!window.module) {
 }`;
         data = JSON.parse(data);
         for (var eventId in data) {
+            if (!data[eventId].loop) {
+                data[eventId].loop = false;
+            }
+            if (!data[eventId].repeatCount) {
+                data[eventId].repeatCount = '0';
+            } else {
+                data[eventId].repeatCount = data[eventId].repeatCount.toString();
+            }
             var pages = data[eventId].pages;
             for (var i = 0; i < pages.length; i++) {
+                if (pages[i].switcher) {
+                    pages[i].switcher = pages[i].switcher.join(',');
+                } else {
+                    pages[i].switcher = '';
+                }
                 var subEvents = pages[i].subEvents
                 for (var j = 0; j < subEvents.length; j++) {
                     var subEvent = subEvents[j];

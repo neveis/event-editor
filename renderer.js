@@ -25,8 +25,21 @@ $("#output").click(function() {
         let eventId = eventData.eventId;
         events[eventId] = JSON.parse(JSON.stringify(eventData));
         events[eventId].eventTypeMap = undefined;
+        if (events[eventId].repeatCount !== 'Infinity') {
+            let count = parseInt(events[eventId].repeatCount);
+            //防止出现非法值
+            if (isNaN(count)) {
+                events[eventId].repeatCount = 0;
+            }
+            events[eventId].repeatCount = count;
+        }
         var pages = events[eventId].pages;
         for (var j = 0; j < pages.length; j++) {
+            if (pages[j].switcher == '') {
+                pages[j].switcher = []
+            } else {
+                pages[j].switcher = pages[j].switcher.split(',');
+            }
             var subEvents = pages[j].subEvents;
             for (var k = 0; k < subEvents.length; k++) {
                 subEvents[k]['_id'] = undefined;
@@ -61,8 +74,21 @@ $('#import').click(function() {
     }
     events = JSON.parse(events);
     for (var eventId in events) {
+        if (!events[eventId].loop) {
+            events[eventId].loop = false;
+        }
+        if (!events[eventId].repeatCount) {
+            events[eventId].repeatCount = '0';
+        } else {
+            events[eventId].repeatCount = events[eventId].repeatCount.toString();
+        }
         var pages = events[eventId].pages;
         for (var i = 0; i < pages.length; i++) {
+            if (pages[i].switcher) {
+                pages[i].switcher = pages[i].switcher.join(',');
+            } else {
+                pages[i].switcher = '';
+            }
             var subEvents = pages[i].subEvents
             for (var j = 0; j < subEvents.length; j++) {
                 var subEvent = subEvents[j];

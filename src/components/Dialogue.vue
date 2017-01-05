@@ -6,11 +6,11 @@
 		</li>
 		<li><span>内容</span></li>
 		<ul class="dialogue-content">
-			<li v-for="(dialogue,index) in actor.dialogues" :key="dialogue._id" class="uk-animation-slide-top">
+			<li v-for="(dialogue,index) in actor.dialogues" :key="dialogue._id">
 				<textarea v-model="dialogue.text" rows="1"></textarea>
-                <div class="dialogue-control uk-visible-hover-inline">
-                    <button v-on:click="delDialog(actor.dialogues,index)" type="button" class="uk-button uk-button-small uk-hidden uk-animation-fade">-</button>
-                    <button v-on:click="addDialog(actor.dialogues,index)" type="button" class="uk-button uk-button-small uk-hidden uk-animation-fade">+</button>
+                <div class="dialogue-control">
+                    <button v-on:click="delDialog(actor.dialogues,index)" type="button" class="uk-button uk-button-small">-</button>
+                    <button v-on:click="addDialog(actor.dialogues,index)" type="button" class="uk-button uk-button-small">+</button>
                 </div>
 			</li>
         </ul>
@@ -50,6 +50,9 @@
                         _id: 0
                     }],
                     _id: actors.length
+                });
+                Vue.nextTick(function() {
+                    autosize($('textarea'));
                 })
             },
             delActor: function(actors, index) {

@@ -36,6 +36,7 @@
 </template>
 
 <script>
+    import Vue from 'vue'
     import Event from './Event'
     export default {
         components: {
@@ -58,7 +59,10 @@
                     event: {
                         eventId: '',
                         triggerType: '1',
+                        loop: false,
+                        repeatCount: '0',
                         pages: [{
+                            switcher: '',
                             subEvents: []
                         }]
                     }
@@ -68,6 +72,9 @@
             },
             selectEvent: function(index) {
                 this.selectedIndex = index;
+                Vue.nextTick(function() {
+                    autosize.update($('textarea'));
+                })
             },
             delEvent: function(index) {
                 this.events.splice(index, 1);

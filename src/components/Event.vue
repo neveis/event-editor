@@ -17,6 +17,14 @@
                     <span><input type="radio" name="trigger-type" value="1" v-model="triggerType"> <label>确认键</label></span>
                     <span><input type="radio" name="trigger-type" value="2" v-model="triggerType"> <label>接触</label></span>
                     <span><input type="radio" name="trigger-type" value="3" v-model="triggerType"> <label>接触前</label></span>
+                    <span><input type="radio" name="trigger-type" value="0" v-model="triggerType"> <label>自动运行</label></span>
+                </div>
+            </div>
+            <!-- 循环 -->
+            <div class="uk-form-row">
+                <div class="uk-form-controls">
+                    <span><label>循环</label> <input type="checkbox" v-model="loop"></span>
+                    <span><label>次数</label> <input type="text" v-model="repeatCount" data-uk-tooltip title="无限循环请填'Infinity'"></span>
                 </div>
             </div>
             <!-- 事件页选项卡 需要绑定事件页的ID，以用于切换事件页-->
@@ -37,31 +45,38 @@
                                 <li><a>条件</a></li>
                             </ul>
                         </div>
-                        <ul class="uk-switcher" :id="'event-' + eventIndex + '-page-' + pageIndex"> 
-                            <li>
-                                <div class="uk-float-left sub-event-panel uk-sortable" data-uk-sortable="{handleClass:'uk-sortable-handle'}">
-                                    <div class="sub-event" v-for="(subEvent,index) in page.subEvents" :key="subEvent._id">
-                                        <select v-model.number="subEvent.eventType" v-on:change="changeEventType($event,subEvent)" :id="'event-type-'+ eventIndex +'-' + pageIndex + '-' + index">
-                                            <option v-for="(value,key) in eventTypeMap" :value=key>{{ value.optionLabel }}</option>
-                                        </select>
-                                        <button type="button" class="uk-button uk-icon-unlock-alt" @click.stop="disableTypeSelect($event,'event-type-'+ eventIndex +'-' + pageIndex + '-' + index)"></button>
-                                        <button type="button" class="uk-button uk-icon-toggle-up" @click.stop="hideSubEvent($event,'sub-event-' + eventIndex + '-' + pageIndex + '-' + index)"></button>
-                                        <button type="button" class="uk-button uk-icon-close" @click.stop="delSubEvent(page.subEvents,index)"></button>
-                                        <i class="uk-sortable-handle uk-icon uk-icon-bars" @click="checkOrder($event,index,page.subEvents)"></i>
-                                        <component class="sub-event-comp" :is="eventTypeMap[subEvent.eventType]?eventTypeMap[subEvent.eventType].currentView:null" :subEvent="subEvent" :id="'sub-event-' + eventIndex + '-' + pageIndex + '-' + index"></component>
-                                    </div>
+                        <div class="uk-float-left">
+                            <ul class="uk-switcher" :id="'event-' + eventIndex + '-page-' + pageIndex"> 
+                                <li>
+                                    <div class="uk-float-left sub-event-panel uk-sortable" data-uk-sortable="{handleClass:'uk-sortable-handle'}">
+                                        <div class="sub-event" v-for="(subEvent,index) in page.subEvents" :key="subEvent._id" :subEventIndex="index" :pageIndex="pageIndex">
+                                            <select v-model.number="subEvent.eventType" v-on:change="changeEventType($event,subEvent)" :id="'event-type-'+ eventIndex +'-' + pageIndex + '-' + index">
+                                                <option v-for="(value,key) in eventTypeMap" :value=key>{{ value.optionLabel }}</option>
+                                            </select>
+                                            <button type="button" class="uk-button uk-icon-unlock-alt" @click.stop="disableTypeSelect($event,'event-type-'+ eventIndex +'-' + pageIndex + '-' + index)"></button>
+                                            <button type="button" class="uk-button uk-icon-toggle-up" @click.stop="hideSubEvent($event,'sub-event-' + eventIndex + '-' + pageIndex + '-' + index)"></button>
+                                            <button type="button" class="uk-button uk-icon-plus" @click.stop="prependSubEvent(page.subEvents,index)" data-uk-tooltip title="上方新建子事件"></button>
+                                            <button type="button" class="uk-button uk-icon-close" @click.stop="delSubEvent(page.subEvents,index)" data-uk-tooltip title="删除子事件"></button>
+                                            <i class="uk-sortable-handle uk-icon uk-icon-bars" data-uk-tooltip title="拖动排序"></i>
+                                            <component class="sub-event-comp" :is="eventTypeMap[subEvent.eventType]?eventTypeMap[subEvent.eventType].currentView:null" :subEvent="subEvent" :id="'sub-event-' + eventIndex + '-' + pageIndex + '-' + index"></component>
+                                        </div>
+                                        
+                                    </div>  
                                     <div>
-                                        <button class="uk-button" id="page-bottom" v-on:click="addNewSubEvent(page.subEvents)" type="button">新子事件</button>
+                                        <button class="uk-button" id="page-bottom" v-on:click="addNewSubEvent($event,page.subEvents)" type="button">新子事件</button>
                                     </div>
-                                </div>  
-                            </li>
-                            <li>
-                                开关
-                            </li>
-                            <li>
-                                条件
-                            </li>
-                        </ul>
+                                </li>
+                                <li>
+                                    <div>
+                                        <p>开关列表，多个开关使用","隔开</p>
+                                        <textarea v-model="page.switcher" rows="1"></textarea>
+                                    </div>
+                                </li>
+                                <li>
+                                    条件
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -75,6 +90,7 @@
     import Vue from 'vue'
     import Dialogue from './Dialogue'
     import Shop from './Shop'
+    import ExecuteEvent from './ExecuteEvent'
     import ActorMove from './ActorMove'
     import SwitchScene from './SwitchScene'
     import ScrollMap from './ScrollMap'
@@ -108,6 +124,10 @@
         '3': {
             currentView: 'SwitchScene',
             optionLabel: '场景切换'
+        },
+        '4': {
+            currentView: 'ExecuteEvent',
+            optionLabel: '运行指定事件'
         },
         '5': {
             currentView: 'ScrollMap',
@@ -191,6 +211,7 @@
             Dialogue,
             Shop,
             SwitchScene,
+            ExecuteEvent,
             ScrollMap,
             ActorMove,
             ShowActor,
@@ -217,16 +238,26 @@
             return this.event;
         },
         mounted: function() {
+            let self = this;
             UIkit.on('change.uk.sortable', function(event, sortableObject, draggedElement, action) {
                 //拖动排序后，模拟点击，触发事件
                 if (draggedElement) {
-                    $(draggedElement).find('i').click();
+                    let oldIndex = $(draggedElement).attr('subEventIndex');
+                    let pageIndex = $(draggedElement).attr('pageIndex');
+                    let newIndex = $(draggedElement).index()
+                    console.log('drag p' + pageIndex, oldIndex, 'to', $(draggedElement).index());
+                    let subEvents = self.event.pages[pageIndex].subEvents;
+                    if (oldIndex != newIndex) {
+                        let temp = subEvents.splice(oldIndex, 1)
+                        subEvents.splice(newIndex, 0, temp[0]);
+                    }
                 }
             });
         },
         methods: {
             addNewPage: function() {
                 this.pages.push({
+                    switcher: '',
                     subEvents: []
                 })
             },
@@ -235,7 +266,7 @@
                 //如果是最后一个子事件，自动滚动到底部
                 subEvent.detail = {};
                 Vue.nextTick(function() {
-                    if ($(e.target).parent().index() === $(e.target).parent().siblings().length - 1)
+                    if ($(e.target).parent().index() === $(e.target).parent().siblings().length)
                         e.target.parentNode.scrollIntoView();
                 })
             },
@@ -254,7 +285,7 @@
                 $(e.target).toggleClass('uk-icon-toggle-down').toggleClass('uk-icon-toggle-up');
                 $('#' + subEventId).toggleClass('uk-hidden');
             },
-            addNewSubEvent: function(subEvents) {
+            addNewSubEvent: function(e, subEvents) {
                 subEvents.push({
                     detail: {},
                     eventType: '',
@@ -262,17 +293,15 @@
                     _id: subEvents.length
                 })
             },
+            prependSubEvent: function(subEvents, index) {
+                subEvents.splice(index, 0, {
+                    detail: {},
+                    eventType: '',
+                    _id: subEvents.length
+                });
+            },
             delSubEvent: function(subEvents, index) {
                 subEvents.splice(index, 1);
-            },
-            checkOrder: function(e, index, subEvents) {
-                let currentIndex = $(e.target).parent().index();
-
-                if (currentIndex !== index) {
-                    let temp = subEvents.splice(index, 1)
-                    subEvents.splice(currentIndex, 0, temp[0]);
-                }
-
             }
         }
     }
