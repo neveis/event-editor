@@ -63,7 +63,8 @@
                         repeatCount: '0',
                         pages: [{
                             switcher: '',
-                            subEvents: []
+                            subEvents: [],
+                            condition: [],
                         }]
                     }
                 });

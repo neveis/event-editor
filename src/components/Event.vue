@@ -63,7 +63,7 @@
                                         
                                     </div>  
                                     <div>
-                                        <button class="uk-button" id="page-bottom" v-on:click="addNewSubEvent($event,page.subEvents)" type="button">新子事件</button>
+                                        <button class="uk-button" v-on:click="addNewSubEvent($event,page.subEvents)" type="button">新子事件</button>
                                     </div>
                                 </li>
                                 <li>
@@ -73,7 +73,18 @@
                                     </div>
                                 </li>
                                 <li>
-                                    条件
+                                    <div>
+                                        <div class="condition" v-for="(condition,index) in page.condition">
+                                            <select v-model.number="condition.conditionType" v-on:change="changeConditionType($event,condition)">
+                                                <option v-for="(value,key) in conditionTypeMap" :value=key>{{ value.optionLabel }}</option>
+                                            </select>
+                                            <button type="button" class="uk-button uk-icon-close" @click.stop="delCondition(page.condition,index)" data-uk-tooltip title="删除条件"></button>
+                                            <component class="condition-comp" :is="conditionTypeMap[condition.conditionType]?conditionTypeMap[condition.conditionType].currentView:null" :condition="condition"></component>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button class="uk-button" v-on:click="addNewCondition(page.condition)" type="button">新条件</button>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -106,11 +117,14 @@
     import DoorAnimation from './DoorAnimation'
     import MoveAStar from './MoveAStar'
     import GetTreasure from './GetTreasure'
+    import LockUI from './LockUI'
     import ShowOption from './ShowOption'
     import DelaySecond from './DelaySecond'
     import Fade from './Fade'
     import AudioMusic from './AudioMusic'
     import AudioEffect from './AudioEffect'
+
+    import CheckItem from './ConditionComps/CheckItem'
 
     var eventTypeMap = {
         '1': {
@@ -185,6 +199,10 @@
             currentView: 'GetTreasure',
             optionLabel: '拾取宝箱/道具'
         },
+        '20': {
+            currentView: 'LockUI',
+            optionLabel: '锁定UI'
+        },
         '21': {
             currentView: 'ShowOption',
             optionLabel: '选项'
@@ -206,6 +224,14 @@
             optionLabel: '播放音效'
         },
     };
+
+    var conditionTypeMap = {
+        '1': {
+            currentView: 'CheckItem',
+            optionLabel: '检测道具'
+        }
+    };
+
     export default {
         components: {
             Dialogue,
@@ -226,15 +252,19 @@
             DoorAnimation,
             MoveAStar,
             GetTreasure,
+            LockUI,
             ShowOption,
             DelaySecond,
             Fade,
             AudioMusic,
-            AudioEffect
+            AudioEffect,
+
+            CheckItem
         },
         props: ['event', 'eventIndex'],
         data: function() {
             this.event.eventTypeMap = eventTypeMap;
+            this.event.conditionTypeMap = conditionTypeMap;
             return this.event;
         },
         mounted: function() {
@@ -258,13 +288,22 @@
             addNewPage: function() {
                 this.pages.push({
                     switcher: '',
-                    subEvents: []
+                    subEvents: [],
+                    condition: [],
                 })
             },
             changeEventType: function(e, subEvent) {
                 //subEvent.currentView = eventTypeMap[subEvent.eventType].currentView;
                 //如果是最后一个子事件，自动滚动到底部
                 subEvent.detail = {};
+                Vue.nextTick(function() {
+                    if ($(e.target).parent().index() === $(e.target).parent().siblings().length)
+                        e.target.parentNode.scrollIntoView();
+                })
+            },
+            changeConditionType: function(e, condition) {
+                //如果是最后一个子事件，自动滚动到底部
+                condition.detail = {};
                 Vue.nextTick(function() {
                     if ($(e.target).parent().index() === $(e.target).parent().siblings().length)
                         e.target.parentNode.scrollIntoView();
@@ -302,7 +341,16 @@
             },
             delSubEvent: function(subEvents, index) {
                 subEvents.splice(index, 1);
-            }
+            },
+            addNewCondition: function(condition) {
+                condition.push({
+                    detail: {},
+                    conditionType: ''
+                })
+            },
+            delCondition: function(conditions, index) {
+                conditions.splice(index, 1);
+            },
         }
     }
 </script>
@@ -379,7 +427,7 @@
     }
     
      ::-webkit-scrollbar-thumb {
-        background-color: hsla(0, 0%, 47%, 0);
+        background-color: hsla(0, 0%, 80%, .9);
     }
     
      ::-webkit-scrollbar-thumb:hover {
@@ -388,6 +436,6 @@
     }
     
      ::-webkit-scrollbar-thumb:active {
-        background: hsla(0, 0%, 75%, .4)
+        background: hsla(0, 0%, 25%, .8)
     }
 </style>

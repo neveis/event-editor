@@ -25,6 +25,7 @@ $("#output").click(function() {
         let eventId = eventData.eventId;
         events[eventId] = JSON.parse(JSON.stringify(eventData));
         events[eventId].eventTypeMap = undefined;
+        events[eventId].conditionTypeMap = undefined;
         if (events[eventId].repeatCount !== 'Infinity') {
             let count = parseInt(events[eventId].repeatCount);
             //防止出现非法值
