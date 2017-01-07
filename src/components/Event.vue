@@ -123,6 +123,10 @@
     import Fade from './Fade'
     import AudioMusic from './AudioMusic'
     import AudioEffect from './AudioEffect'
+    import ChangeAtlas from './ChangeAtlas'
+    import ChangeSprite from './ChangeSprite'
+    import MoveAnimation from './MoveAnimation'
+
 
     import CheckItem from './ConditionComps/CheckItem'
 
@@ -223,6 +227,19 @@
             currentView: 'AudioEffect',
             optionLabel: '播放音效'
         },
+        '27': {
+            currentView: 'ChangeAtlas',
+            optionLabel: '更换图集'
+        },
+        '28': {
+            currentView: 'ChangeSprite',
+            optionLabel: '更换图像'
+        },
+        '29': {
+            currentView: 'MoveAnimation',
+            optionLabel: '角色移动动画'
+        },
+
     };
 
     var conditionTypeMap = {
@@ -258,6 +275,9 @@
             Fade,
             AudioMusic,
             AudioEffect,
+            ChangeAtlas,
+            ChangeSprite,
+            MoveAnimation,
 
             CheckItem
         },
