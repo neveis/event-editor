@@ -126,7 +126,7 @@
     import ChangeAtlas from './ChangeAtlas'
     import ChangeSprite from './ChangeSprite'
     import MoveAnimation from './MoveAnimation'
-
+    import ShowLoading from './ShowLoading'
 
     import CheckItem from './ConditionComps/CheckItem'
 
@@ -239,7 +239,10 @@
             currentView: 'MoveAnimation',
             optionLabel: '角色移动动画'
         },
-
+        '31': {
+            currentView: 'ShowLoading',
+            optionLabel: 'Loading界面'
+        }
     };
 
     var conditionTypeMap = {
@@ -278,6 +281,7 @@
             ChangeAtlas,
             ChangeSprite,
             MoveAnimation,
+            ShowLoading,
 
             CheckItem
         },
@@ -299,7 +303,8 @@
                     let subEvents = self.event.pages[pageIndex].subEvents;
                     if (oldIndex != newIndex) {
                         let temp = subEvents.splice(oldIndex, 1)
-                        subEvents.splice(newIndex, 0, temp[0]);
+                        if (temp.length)
+                            subEvents.splice(newIndex, 0, temp[0]);
                     }
                 }
             });
