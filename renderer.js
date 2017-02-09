@@ -56,10 +56,18 @@ $("#output").click(function() {
                     })
                 } else if (subEvents[k].eventType === 2) {
                     //商店
-                    subEvents[k].detail.itemIdList = subEvents[k].detail.itemIdList.split(',');
+                    if (subEvents[k].detail.itemIdList == '') {
+                        subEvents[k].detail.itemIdList = [];
+                    } else {
+                        subEvents[k].detail.itemIdList = subEvents[k].detail.itemIdList.split(',');
+                    }
                 } else if (subEvents[k].eventType === 14) {
                     //隐藏UI
-                    subEvents[k].detail.nodeList = subEvents[k].detail.nodeList.split(',');
+                    if (subEvents[k].detail.nodeList == '') {
+                        subEvents[k].detail.nodeList = [];
+                    } else {
+                        subEvents[k].detail.nodeList = subEvents[k].detail.nodeList.split(',');
+                    }
                 }
             }
         }

@@ -126,7 +126,9 @@
     import ChangeAtlas from './ChangeAtlas'
     import ChangeSprite from './ChangeSprite'
     import MoveAnimation from './MoveAnimation'
+    import SetLayerOrder from './SetLayerOrder'
     import ShowLoading from './ShowLoading'
+    import Branch from './Branch'
 
     import CheckItem from './ConditionComps/CheckItem'
 
@@ -239,9 +241,17 @@
             currentView: 'MoveAnimation',
             optionLabel: '角色移动动画'
         },
+        '30': {
+            currentView: 'SetLayerOrder',
+            optionLabel: '设置图层顺序'
+        },
         '31': {
             currentView: 'ShowLoading',
             optionLabel: 'Loading界面'
+        },
+        '32': {
+            currentView: 'Branch',
+            optionLabel: '分支'
         }
     };
 
@@ -281,7 +291,9 @@
             ChangeAtlas,
             ChangeSprite,
             MoveAnimation,
+            SetLayerOrder,
             ShowLoading,
+            Branch,
 
             CheckItem
         },
